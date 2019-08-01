@@ -1,4 +1,4 @@
-(ns fulcro_todomvc.server
+(ns app.server
   (:require
     [clojure.core.async :as async]
     [com.fulcrologic.fulcro.algorithms.misc :as util]

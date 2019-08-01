@@ -1,4 +1,4 @@
-(ns fulcro-todomvc.server
+(ns app.server
   (:require
     [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]
     [clojure.core.async :as async]

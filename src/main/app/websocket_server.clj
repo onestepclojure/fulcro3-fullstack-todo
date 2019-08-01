@@ -1,4 +1,4 @@
-(ns fulcro_todomvc.websocket-server)
+(ns app.websocket-server)
 
 (comment
   (ns fulcro_todomvc.websocket-server

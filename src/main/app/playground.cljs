@@ -1,4 +1,4 @@
-(ns fulcro_todomvc.playground
+(ns app.playground
   (:require
     ["react" :as react :refer [useState useEffect]]
     ["react-dom" :as react-dom]

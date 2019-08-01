@@ -1,4 +1,4 @@
-(ns fulcro-todomvc.main
+(ns app.main
   (:require
     [com.fulcrologic.fulcro.networking.http-remote :as fhr]
     [com.fulcrologic.fulcro.networking.mock-server-remote :as mock-remote]

@@ -1,4 +1,4 @@
-(ns fulcro-todomvc.api
+(ns app.api
   (:require
     [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]
     [com.fulcrologic.fulcro.algorithms.data-targeting :as dt]

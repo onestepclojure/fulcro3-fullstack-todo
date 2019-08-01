@@ -1,4 +1,4 @@
-(ns fulcro-todomvc.ui-with-legacy-ui-routers
+(ns app.ui-with-legacy-ui-routers
   (:require
     [com.fulcrologic.fulcro.algorithms.tempid :as tmp]
     [com.fulcrologic.fulcro.application :as app]

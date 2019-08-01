@@ -1,4 +1,4 @@
-(ns fulcro-todomvc.ui
+(ns app.ui
   (:require
     [com.fulcrologic.fulcro.algorithms.tempid :as tmp]
     [com.fulcrologic.fulcro.application :as app]

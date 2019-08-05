@@ -1,16 +1,16 @@
 (ns fulcro-todomvc.main
   (:require
-    [com.fulcrologic.fulcro.networking.http-remote :as fhr]
-    [com.fulcrologic.fulcro.networking.mock-server-remote :as mock-remote]
-    [com.fulcrologic.fulcro.rendering.keyframe-render :as keyframe]
+   [com.fulcrologic.fulcro.networking.http-remote :as fhr]
+   [com.fulcrologic.fulcro.networking.mock-server-remote :as mock-remote]
+   [com.fulcrologic.fulcro.rendering.keyframe-render :as keyframe]
     ;[com.fulcrologic.fulcro.networking.websockets :as fws]
-    [com.fulcrologic.fulcro.application :as app]
-    [com.fulcrologic.fulcro.components :as comp]
-    [com.fulcrologic.fulcro.data-fetch :as df]
-    [com.fulcrologic.fulcro.algorithms.timbre-support :as ts]
-    [fulcro-todomvc.ui :as ui]
-    [fulcro-todomvc.server :as sapi]
-    [taoensso.timbre :as log]))
+   [com.fulcrologic.fulcro.application :as app]
+   [com.fulcrologic.fulcro.components :as comp]
+   [com.fulcrologic.fulcro.data-fetch :as df]
+   [com.fulcrologic.fulcro.algorithms.timbre-support :as ts]
+   [fulcro-todomvc.ui :as ui]
+   [fulcro-todomvc.server :as sapi]
+   [taoensso.timbre :as log]))
 
 (log/set-level! :debug)
 (log/merge-config! {:output-fn ts/prefix-output-fn
@@ -48,4 +48,4 @@
   (-> app ::app/runtime-atom deref)
   (-> app ::app/state-atom deref)
   (comp/get-query ui/Root
-    (-> app ::app/state-atom deref)))
+                  (-> app ::app/state-atom deref)))

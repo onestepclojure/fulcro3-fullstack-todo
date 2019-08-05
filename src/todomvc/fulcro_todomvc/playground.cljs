@@ -1,12 +1,12 @@
 (ns fulcro_todomvc.playground
   (:require
-    ["react" :as react :refer [useState useEffect]]
-    ["react-dom" :as react-dom]
-    [taoensso.timbre :as log]
-    [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
-    [com.fulcrologic.fulcro.application :as app]
-    [com.fulcrologic.fulcro.algorithms.tx-processing :as txn]
-    [com.fulcrologic.fulcro.dom :as dom]))
+   ["react" :as react :refer [useState useEffect]]
+   ["react-dom" :as react-dom]
+   [taoensso.timbre :as log]
+   [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+   [com.fulcrologic.fulcro.application :as app]
+   [com.fulcrologic.fulcro.algorithms.tx-processing :as txn]
+   [com.fulcrologic.fulcro.dom :as dom]))
 
 (def ^:dynamic *reconciler* nil)
 
@@ -21,8 +21,8 @@
      :getDerivedStateFromError (fn [err])
      :initial-state            {:item/id (random-uuid) :item/label :param/label}}
     (dom/li
-      label (str "." x)
-      (dom/button {:onClick #(m/set-value! this :item/label "B")} "+")))
+     label (str "." x)
+     (dom/button {:onClick #(m/set-value! this :item/label "B")} "+")))
 
   (def ui-list-item (prim/factory ListItem))
 
@@ -33,15 +33,15 @@
                       {:list/id    1
                        :list/label "My List"
                        :list/items (mapv
-                                     #(prim/get-initial-state ListItem {:label (str "a" %)})
-                                     (range 1 1000))})}
+                                    #(prim/get-initial-state ListItem {:label (str "a" %)})
+                                    (range 1 1000))})}
     (let [y (prim/get-state this :y)]
       (dom/div
-        (dom/h4 label)
-        (dom/ul
-          (dom/button {:onClick #(prim/set-state! this {:y 22})} "Regress!")
-          (map (fn [item]
-                 (ui-list-item (prim/computed item {:x (or y 1)}))) items)))))
+       (dom/h4 label)
+       (dom/ul
+        (dom/button {:onClick #(prim/set-state! this {:y 22})} "Regress!")
+        (map (fn [item]
+               (ui-list-item (prim/computed item {:x (or y 1)}))) items)))))
 
   (def ui-list (prim/factory TodoList))
 
@@ -49,12 +49,12 @@
     {:query         [{:the-list (prim/get-query TodoList)}]
      :initial-state {:the-list {}}}
     (dom/table
-      (dom/tbody
-        (dom/tr
-          (dom/td
-            (ui-list the-list))
-          (dom/td
-            (ui-list the-list))))))
+     (dom/tbody
+      (dom/tr
+       (dom/td
+        (ui-list the-list))
+       (dom/td
+        (ui-list the-list))))))
 
   (prim/defsc C [this props]
     (let [a (prim/get-state this :a)]
@@ -89,18 +89,18 @@
     [component query ident-fn initial-ident]
     (let [[props setProps] (use-state {})]                  ; this is how the component gets props, and how Fulcro would update them
       (use-effect                                           ; the empty array makes this a didMount effect
-        (fn []
-          (set! (.-fulcro_query component) query)           ;; record the query and ident function on the component function itself
-          (set! (.-fulcro_ident component) ident-fn)
+       (fn []
+         (set! (.-fulcro_query component) query)           ;; record the query and ident function on the component function itself
+         (set! (.-fulcro_ident component) ident-fn)
           ;; pull initial props from the database, and set them on the props
-          (let [initial-props (prim/db->tree query (get-in @app-db initial-ident) @app-db)]
-            (setProps initial-props))
+         (let [initial-props (prim/db->tree query (get-in @app-db initial-ident) @app-db)]
+           (setProps initial-props))
           ;; Add the setProps function to the index so we can call it later (set of functions stored by ident)
-          (index! initial-ident setProps)
+         (index! initial-ident setProps)
           ;; cleanup function: drops the update fn from the index
-          (fn []
-            (drop! initial-ident setProps)))
-        #js [])
+         (fn []
+           (drop! initial-ident setProps)))
+       #js [])
       props)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -114,37 +114,34 @@
     ;; a data root, even though it isn't the app root
     (fn [config-props]
       (let [{:counter/keys [id n] :as props} (use-fulcro
-                                               Counter      ; component
-                                               [:counter/id :counter/n] ; query
-                                               (fn [p] [:counter/id (:counter/id p)]) ; ident-fn
-                                               [:counter/id (aget config-props "mount-id")])] ; initial-ident
+                                              Counter      ; component
+                                              [:counter/id :counter/n] ; query
+                                              (fn [p] [:counter/id (:counter/id p)]) ; ident-fn
+                                              [:counter/id (aget config-props "mount-id")])] ; initial-ident
         (dom/div
-          (dom/div "Counter " id)
-          (dom/button {:onClick (fn incr* []
-                                  (let [;; MUTATE
-                                        ident         [:counter/id (aget config-props "mount-id")]
-                                        _             (swap! app-db update-in (conj ident :counter/n) inc)
+         (dom/div "Counter " id)
+         (dom/button {:onClick (fn incr* []
+                                 (let [;; MUTATE
+                                       ident         [:counter/id (aget config-props "mount-id")]
+                                       _             (swap! app-db update-in (conj ident :counter/n) inc)
                                         ;; REFRESH is trivial..denormalize and set props via index stored set props functions
-                                        query         (get-query Counter)
-                                        props         (prim/db->tree query (get-in @app-db ident) @app-db)
-                                        set-props-fns (get @index ident)]
+                                       query         (get-query Counter)
+                                       props         (prim/db->tree query (get-in @app-db ident) @app-db)
+                                       set-props-fns (get @index ident)]
                                     ;; Refreshes all components with the given ID.
-                                    (doseq [set-props set-props-fns]
-                                      (set-props props))))}
-            (str n))))))
+                                   (doseq [set-props set-props-fns]
+                                     (set-props props))))}
+                     (str n))))))
 
   (defn ui-counter [props]
-    (dom/create-element Counter props))
-
-  )
-
+    (dom/create-element Counter props)))
 
 (comment
   (render!
-    (dom/div
-      (ui-counter #js {:mount-id 1})
-      (ui-counter #js {:mount-id 2})
-      (ui-counter #js {:mount-id 1})))
+   (dom/div
+    (ui-counter #js {:mount-id 1})
+    (ui-counter #js {:mount-id 2})
+    (ui-counter #js {:mount-id 1})))
 
   index)
 
@@ -160,14 +157,14 @@
     [ident]
     (let [[props setProps] (use-state (with-meta {} {:time 0}))]
       (use-effect
-        (fn []
-          (log/info "Indexing ident " ident)
-          (index! ident setProps)
-          (fn []
-            (log/info "Dropping index for ident " ident)
-            (drop! ident setProps)))
+       (fn []
+         (log/info "Indexing ident " ident)
+         (index! ident setProps)
+         (fn []
+           (log/info "Dropping index for ident " ident)
+           (drop! ident setProps)))
         ;; refresh list. ident needs to be a string because react compares with ===
-        #js [(str ident) setProps])
+       #js [(str ident) setProps])
       props))
 
   (let [query    [:item/id :item/label]
@@ -181,7 +178,7 @@
               local-props       (use-fulcro-nonroot ident)
               local-time        (-> local-props meta :time)
               {:item/keys [label] :as real-props} (if (and local-time (pos-int? local-time)
-                                                        (> local-time parent-time))
+                                                           (> local-time parent-time))
                                                     local-props
                                                     props-from-parent)]
           (dom/li label))))
@@ -200,37 +197,33 @@
   ;; render logic prevents rendering going "back in time"
   (let [props-refresh-time 1]
     (render!
-      (dom/ol
-        (ui-todo-item (t {:item/id 1 :item/label "A"} props-refresh-time))
-        (ui-todo-item (t {:item/id 2 :item/label "B"} props-refresh-time))
-        (ui-todo-item (t {:item/id 3 :item/label "C"} props-refresh-time)))))
+     (dom/ol
+      (ui-todo-item (t {:item/id 1 :item/label "A"} props-refresh-time))
+      (ui-todo-item (t {:item/id 2 :item/label "B"} props-refresh-time))
+      (ui-todo-item (t {:item/id 3 :item/label "C"} props-refresh-time)))))
 
   ;; Local (targeted props) UI refresh
   ;; This will update the prior rendering the first time you use it (since time = 2, and props time was 1),
   ;; but then the props-based rendering won't refresh unless you bump time to 3+
   (let [local-refresh-time 2
         set-props-for-2    (first (get @index [:item/id 2]))]
-    (set-props-for-2 (t {:item/id 2 :item/label "XXX"} local-refresh-time)))
-
-  )
+    (set-props-for-2 (t {:item/id 2 :item/label "XXX"} local-refresh-time))))
 
 #_#_(defonce TodoList
       (fn [props]
         (let [props-from-parent (.-fp props)
               parent-time       (-> props-from-parent meta :time)
               [local-props setProps] (use-fulcro-nonroot TodoList [:list/id :list/name]
-                                       (fn [p] [:list/id (:list/id p)])
-                                       {})
+                                                         (fn [p] [:list/id (:list/id p)])
+                                                         {})
               local-time        (-> local-props meta :time)]
           ;; this would need to be a time-based check as well in case the parent was updating for setState reasons,
           ;; and could really just choose most recent without needing to do an actual setProps
           (when (not= props-from-parent local-props)
-            (setProps props-from-parent))
+            (setProps props-from-parent)))))
 
-          )))
-
-    (defn ui-todo-list [props]
-      (dom/create-element TodoList #js {:fp props}))
+  (defn ui-todo-list [props]
+    (dom/create-element TodoList #js {:fp props}))
 
 ;(defonce client (atom (fc/make-fulcro-client {})))
 ;(swap! client fc/mount Root "app")
@@ -251,9 +244,9 @@
    :ident              :person/id}
   (let [n (comp/get-state this :n)]
     (dom/div
-      (dom/div "TODO:" (str "id:" id " name:" name " state n:" n " some: " some-value))
-      (dom/button {:onClick (fn []
-                              (comp/update-state! this update :n inc))} "Click me!"))))
+     (dom/div "TODO:" (str "id:" id " name:" name " state n:" n " some: " some-value))
+     (dom/button {:onClick (fn []
+                             (comp/update-state! this update :n inc))} "Click me!"))))
 
 (defn ui-sample [props & children]
   (let [{:keys [::app/middleware]} *reconciler*
@@ -287,5 +280,5 @@
 (comment
   (binding [*reconciler* app]
     (render!
-      (dom/div
-        (ui-sample {:person/id 21 :person/name "Tony" :y 49})))))
+     (dom/div
+      (ui-sample {:person/id 21 :person/name "Tony" :y 49})))))
